@@ -21,7 +21,7 @@
     "fred_retrieval": "Source: FRED live download | retrieved: 2026-11-12 09:37 UTC"
   },
   "export": {
-    "generated_at": "2026-11-12T10:09:53Z",
+    "generated_at": "2026-11-12T10:17:16Z",
     "python": "3.14.7",
     "pandas": "3.1.1",
     "numpy": "2.5.4",

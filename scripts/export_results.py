@@ -505,7 +505,7 @@ part2 = {
         "label": "Only the 12 months before the test period used as the product's 'first year'",
         "window": {"from": month(first_year.index.min()), "to": month(first_year.index.max())},
         "scores": frame_records(cold_scores, SCORE_COLS),
-        "category_seasonal_index": [{"month": mname, "index": r(cat_si.loc[i + 1], 4)} for i, mname in enumerate(month_names)],
+        "category_seasonal_index": [{"month": mname, "index": r(cat_si.loc[i + 1], 12)} for i, mname in enumerate(month_names)],
     },
     "feature_importance": importances,
     "notebook_llm": {

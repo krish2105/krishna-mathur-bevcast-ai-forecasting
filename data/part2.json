@@ -435,51 +435,51 @@
     "category_seasonal_index": [
       {
         "month": "Jan",
-        "index": 0.9738
+        "index": 0.973793040937
       },
       {
         "month": "Feb",
-        "index": 0.977
+        "index": 0.977024539097
       },
       {
         "month": "Mar",
-        "index": 0.9867
+        "index": 0.986682130923
       },
       {
         "month": "Apr",
-        "index": 0.9975
+        "index": 0.997539376375
       },
       {
         "month": "May",
-        "index": 1.013
+        "index": 1.013020233799
       },
       {
         "month": "Jun",
-        "index": 1.0193
+        "index": 1.019278057397
       },
       {
         "month": "Jul",
-        "index": 1.0271
+        "index": 1.02709255118
       },
       {
         "month": "Aug",
-        "index": 1.02
+        "index": 1.020006818995
       },
       {
         "month": "Sep",
-        "index": 1.0274
+        "index": 1.027440981855
       },
       {
         "month": "Oct",
-        "index": 0.9956
+        "index": 0.995617660404
       },
       {
         "month": "Nov",
-        "index": 0.9808
+        "index": 0.980785950206
       },
       {
         "month": "Dec",
-        "index": 0.9817
+        "index": 0.98171865883
       }
     ]
   },
