@@ -2,10 +2,13 @@ import "server-only";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 /**
- * Google Gemini via the Vercel AI SDK. Default model: gemini-3.6-flash, labelled "Stable" and available on the
- * Gemini API free tier (Google AI Studio models and pricing pages, checked 2026-11-12). Overridable via env.
+ * Google Gemini via the Vercel AI SDK. All three models are labelled "Stable" and have a free tier (Google AI
+ * Studio models and pricing pages, checked 2026-11-12). Free-tier quotas are per project and small, so the
+ * fast Flash-Lite model is primary and the others are backups. Overridable via env.
  */
-export const DEFAULT_MODEL = "gemini-3.6-flash";
+export const DEFAULT_MODEL = "gemini-3.5-flash-lite";
+/** Tried in order when the previous model is out of quota or returns no answer. */
+export const DEFAULT_FALLBACK_MODELS = "gemini-3.1-flash-lite,gemini-3.6-flash";
 export const PROVIDER_NAME = "Google Gemini";
 
 function apiKey(): string | undefined {
@@ -15,9 +18,14 @@ function apiKey(): string | undefined {
 
 /** Safe to pass to pages: says whether a key exists and which model is used, never the key itself. */
 export function llmConfig() {
+  const model = (process.env.GEMINI_MODEL ?? "").trim() || DEFAULT_MODEL;
+  const raw = (process.env.GEMINI_FALLBACK_MODELS ?? "").trim() || DEFAULT_FALLBACK_MODELS;
+  const backups = raw === "none" ? [] : raw.split(",").map((m) => m.trim()).filter((m) => m && m !== model);
   return {
     configured: apiKey() !== undefined,
-    model: (process.env.GEMINI_MODEL ?? "").trim() || DEFAULT_MODEL,
+    model,
+    /** Tried in order; set GEMINI_FALLBACK_MODELS=none to disable the backups. */
+    models: [model, ...backups],
     provider: PROVIDER_NAME,
   };
 }

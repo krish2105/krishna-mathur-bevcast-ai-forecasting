@@ -50,31 +50,43 @@ export async function POST(req: Request) {
   const rl = rateLimit(`summary:${clientIp(req)}`, force ? 3 : 10);
   if (!rl.ok) return Response.json({ error: `Too many requests. Try again in ${rl.retryAfter} s.` }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
 
-  const trace = newTrace();
-  const tools = buildTools(null, trace);
-  try {
-    const res = await generateText({
-      model: geminiModel(cfg.model),
-      instructions: SYSTEM_PROMPT,
-      prompt: SUMMARY_PROMPT,
-      tools,
-      stopWhen: isStepCount(6),
-      maxOutputTokens: MAX_OUTPUT_TOKENS,
-      abortSignal: AbortSignal.timeout(55_000),
-      providerOptions: PROVIDER_OPTIONS,
-    });
-    if (!res.text.trim()) throw new Error(`Empty answer (finish reason ${res.finishReason})`);
-    const payload: SummaryPayload = {
-      mode: "ai",
-      text: res.text,
-      model: cfg.model,
-      generatedAt: new Date().toISOString(),
-      dataAsOf: [...trace.asOf.entries()].map(([k, v]) => `${k}: ${v}`),
-      tools: [...new Set(trace.called)],
-    };
-    cache = { at: Date.now(), payload };
-    return Response.json(payload);
-  } catch (e) {
+  let lastError: unknown = null;
+  for (const modelId of cfg.models) {
+    const trace = newTrace();
+    const tools = buildTools(null, trace);
+    try {
+      const res = await generateText({
+        model: geminiModel(modelId),
+        instructions: SYSTEM_PROMPT,
+        prompt: SUMMARY_PROMPT,
+        tools,
+        stopWhen: isStepCount(6),
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        maxRetries: 0,
+        abortSignal: AbortSignal.timeout(25_000),
+        prepareStep: ({ stepNumber }) => (stepNumber === 0 ? { toolChoice: "required" as const } : { toolChoice: "auto" as const }),
+        providerOptions: PROVIDER_OPTIONS,
+      });
+      if (!res.text.trim()) throw new Error(`Empty answer (finish reason ${res.finishReason})`);
+      if (trace.called.length === 0) throw new Error("The model answered without reading the data (no tool call).");
+      const payload: SummaryPayload = {
+        mode: "ai",
+        text: res.text,
+        model: modelId,
+        generatedAt: new Date().toISOString(),
+        dataAsOf: [...trace.asOf.entries()].map(([k, v]) => `${k}: ${v}`),
+        tools: [...new Set(trace.called)],
+        notice: modelId === cfg.models[0] ? undefined : `Answered by the backup model ${modelId} (primary model busy).`,
+      };
+      cache = { at: Date.now(), payload };
+      return Response.json(payload);
+    } catch (e) {
+      lastError = e;
+      console.error(`[summary] ${modelId} failed:`, e instanceof Error ? e.message : e);
+    }
+  }
+  {
+    const e = lastError;
     console.error("[summary] LLM error:", e instanceof Error ? e.message : e);
     const fb = await fallbackSummary();
     return Response.json({

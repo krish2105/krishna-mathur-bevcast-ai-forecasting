@@ -87,6 +87,6 @@ async function ask(prompt) {
 const out = [];
 for (const p of PROMPTS) {
   out.push(await ask(p));
-  await new Promise((r) => setTimeout(r, 7000)); // stay under 10 requests / minute
+  await new Promise((r) => setTimeout(r, Number(process.env.QA_GAP_MS ?? 7000))); // stay under the rate limits
 }
 console.log(JSON.stringify({ base: BASE, ranAt: new Date().toISOString(), results: out }, null, 2));

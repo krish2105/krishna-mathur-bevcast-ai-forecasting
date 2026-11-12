@@ -224,6 +224,11 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
                       <p className="mt-2 text-xs text-warning-fg">The model declined part of this request (safety filter).</p>
                     )}
                     {meta?.finishReason === "length" && <p className="mt-2 text-xs text-warning-fg">The answer reached the length limit and may be cut off.</p>}
+                    {meta?.notice && meta.notice !== "Live LLM not configured" && (
+                      <p className="mt-2 text-xs text-warning-fg" data-testid="answer-notice">
+                        {meta.notice}
+                      </p>
+                    )}
                   </div>
                   {(meta || text) && (
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">

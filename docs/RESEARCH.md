@@ -112,9 +112,18 @@ Skipped on purpose (out of scope per the brief): reorder points, safety-stock op
 
 At the student's request the Copilot and the AI summary now run on the **Google Gemini API**, with the student's own free-tier key, through `@ai-sdk/google` 4.0.118. Everything else is unchanged: the tools, the system prompt, the rule-based fallback, the rate limit and the validation.
 
-- **Model:** `gemini-3.6-flash`, overridable with `GEMINI_MODEL`. Google AI Studio's models page labels it **Stable**, and its pricing page lists a **free tier**. `gemini-2.5-flash` is deprecated and re-routed on 1 Dec 2026, so it is not used. (Sources: aistudio.google.com/docs/models and /docs/pricing, read 12 Nov 2026.)
+- **Model chain:**
+  1. `gemini-3.5-flash-lite` (primary);
+  2. `gemini-3.1-flash-lite`;
+  3. `gemini-3.6-flash`;
+  4. the labelled rule-based answer.
+
+  All three models are labelled **Stable** with a **free tier** (aistudio.google.com/docs/models and /docs/pricing, read 12 Nov 2026). `gemini-2.5-flash` is deprecated and re-routed on 1 Dec 2026, so it is not used.
+- **Why this order:** free-tier quotas are per project. `gemini-3.6-flash` was the first choice, but in testing it returned "You exceeded your current quota" after about 20 requests. The Flash-Lite models answered the same tool-calling questions correctly in 2–5 s. Each attempt runs with `maxRetries: 0`, and a failed attempt's output is held back, so the user only sees the attempt that succeeded. A notice names the backup model when one answers.
 - **Thinking:** `thinkingConfig.thinkingLevel = "low"`, with `includeThoughts: false`.
 - **History handling:** earlier turns are sent as plain text only, without tool calls or provider metadata. The model calls the tools again when it needs numbers, so no stale thought signatures are replayed.
 - **Tool schemas:** these were kept to Gemini's function-calling subset. For example, `part` is an integer from 1 to 2, not a union of literals.
 - **Privacy:** on the free tier, Google may use prompts to improve its products. The Copilot page says so and asks users not to enter personal data.
 - **Key handling:** the key lives in the gitignored `.env.local` and on Vercel (Production). `scripts/push-gemini-key.sh` copies it without printing it.
+- **Grounding guard:** a backup model once answered "summarise everything" without calling any tool, and invented wrong findings (that Random Forest was best in Part 1, and SARIMA best in Part 2). Every answer's first step is now forced to call a tool (`prepareStep` → `toolChoice: "required"`, which is Gemini `ANY` mode). An answer produced without any tool call is rejected, and the next model or the rule-based fallback is used instead.
+- **No half-written answers:** each attempt is buffered and released only after it finishes without error. Google returned "This model is currently experiencing high demand" mid-answer during testing, and buffering means such a failure moves cleanly to the next model.
