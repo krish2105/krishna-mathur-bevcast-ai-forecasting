@@ -1,0 +1,394 @@
+{
+  "title": "Part 1 · Lab Activity: Retail Demand Forecasting for a Seasonal Product (Air Coolers)",
+  "source_labels": {
+    "demand": "simulated",
+    "temperature": "real"
+  },
+  "demand_note": "12-month air-cooler demand from the professor's reference Colab notebook, labelled there as simulated monthly demand. Teaching data, not real company sales.",
+  "temperature_note": "Observed daily mean 2 m temperature, Dubai (25.20 N, 55.27 E), Open-Meteo Historical Weather API (ERA5 reanalysis), averaged to months.",
+  "monthly": [
+    {
+      "month": "2023-01",
+      "demand": 80,
+      "temp_mean_c": 19.48,
+      "temp_max_c": 23.72
+    },
+    {
+      "month": "2023-02",
+      "demand": 95,
+      "temp_mean_c": 21.15,
+      "temp_max_c": 26.45
+    },
+    {
+      "month": "2023-03",
+      "demand": 130,
+      "temp_mean_c": 23.73,
+      "temp_max_c": 28.51
+    },
+    {
+      "month": "2023-04",
+      "demand": 160,
+      "temp_mean_c": 24.91,
+      "temp_max_c": 29.57
+    },
+    {
+      "month": "2023-05",
+      "demand": 180,
+      "temp_mean_c": 30.14,
+      "temp_max_c": 35.88
+    },
+    {
+      "month": "2023-06",
+      "demand": 200,
+      "temp_mean_c": 33.21,
+      "temp_max_c": 38.55
+    },
+    {
+      "month": "2023-07",
+      "demand": 220,
+      "temp_mean_c": 35.53,
+      "temp_max_c": 41.29
+    },
+    {
+      "month": "2023-08",
+      "demand": 210,
+      "temp_mean_c": 35.64,
+      "temp_max_c": 41.61
+    },
+    {
+      "month": "2023-09",
+      "demand": 170,
+      "temp_mean_c": 34.12,
+      "temp_max_c": 40.1
+    },
+    {
+      "month": "2023-10",
+      "demand": 140,
+      "temp_mean_c": 30.5,
+      "temp_max_c": 35.43
+    },
+    {
+      "month": "2023-11",
+      "demand": 110,
+      "temp_mean_c": 26.61,
+      "temp_max_c": 31.27
+    },
+    {
+      "month": "2023-12",
+      "demand": 90,
+      "temp_mean_c": 22.65,
+      "temp_max_c": 27.15
+    }
+  ],
+  "demand_stats": {
+    "mean": 148.75,
+    "std": 48.62,
+    "min": 80,
+    "max": 220
+  },
+  "temp_stats": {
+    "mean": 28.14,
+    "std": 5.78,
+    "min": 19.48,
+    "max": 35.64
+  },
+  "correlation": 0.909,
+  "slope_units_per_c": 7.64,
+  "intercept": -66.35,
+  "naive": {
+    "window": "Feb–Dec 2023",
+    "mape": 17.35,
+    "wape": 2.59,
+    "sum_abs_error": 270.0,
+    "sum_demand": 1705,
+    "rows": [
+      {
+        "month": "2023-02",
+        "demand": 95,
+        "forecast": 80.0,
+        "abs_error": 15.0,
+        "abs_pct_error": 15.79
+      },
+      {
+        "month": "2023-03",
+        "demand": 130,
+        "forecast": 95.0,
+        "abs_error": 35.0,
+        "abs_pct_error": 26.92
+      },
+      {
+        "month": "2023-04",
+        "demand": 160,
+        "forecast": 130.0,
+        "abs_error": 30.0,
+        "abs_pct_error": 18.75
+      },
+      {
+        "month": "2023-05",
+        "demand": 180,
+        "forecast": 160.0,
+        "abs_error": 20.0,
+        "abs_pct_error": 11.11
+      },
+      {
+        "month": "2023-06",
+        "demand": 200,
+        "forecast": 180.0,
+        "abs_error": 20.0,
+        "abs_pct_error": 10.0
+      },
+      {
+        "month": "2023-07",
+        "demand": 220,
+        "forecast": 200.0,
+        "abs_error": 20.0,
+        "abs_pct_error": 9.09
+      },
+      {
+        "month": "2023-08",
+        "demand": 210,
+        "forecast": 220.0,
+        "abs_error": 10.0,
+        "abs_pct_error": 4.76
+      },
+      {
+        "month": "2023-09",
+        "demand": 170,
+        "forecast": 210.0,
+        "abs_error": 40.0,
+        "abs_pct_error": 23.53
+      },
+      {
+        "month": "2023-10",
+        "demand": 140,
+        "forecast": 170.0,
+        "abs_error": 30.0,
+        "abs_pct_error": 21.43
+      },
+      {
+        "month": "2023-11",
+        "demand": 110,
+        "forecast": 140.0,
+        "abs_error": 30.0,
+        "abs_pct_error": 27.27
+      },
+      {
+        "month": "2023-12",
+        "demand": 90,
+        "forecast": 110.0,
+        "abs_error": 20.0,
+        "abs_pct_error": 22.22
+      }
+    ]
+  },
+  "in_sample": {
+    "window": "Mar–Dec 2023",
+    "warning": "Scored on the same months the model was trained on: a measure of fit, not forecasting ability.",
+    "scores": [
+      {
+        "model": "Random Forest – in-sample (Mar–Dec)",
+        "mape": 8.51,
+        "wape": 7.76
+      },
+      {
+        "model": "Naïve (Mar–Dec)",
+        "mape": 17.51,
+        "wape": 15.84
+      }
+    ],
+    "rows": [
+      {
+        "month": "2023-03",
+        "demand": 130,
+        "naive": 95.0,
+        "rf_in_sample": 128.6
+      },
+      {
+        "month": "2023-04",
+        "demand": 160,
+        "naive": 130.0,
+        "rf_in_sample": 140.6
+      },
+      {
+        "month": "2023-05",
+        "demand": 180,
+        "naive": 160.0,
+        "rf_in_sample": 166.0
+      },
+      {
+        "month": "2023-06",
+        "demand": 200,
+        "naive": 180.0,
+        "rf_in_sample": 186.5
+      },
+      {
+        "month": "2023-07",
+        "demand": 220,
+        "naive": 200.0,
+        "rf_in_sample": 208.1
+      },
+      {
+        "month": "2023-08",
+        "demand": 210,
+        "naive": 220.0,
+        "rf_in_sample": 198.3
+      },
+      {
+        "month": "2023-09",
+        "demand": 170,
+        "naive": 210.0,
+        "rf_in_sample": 177.7
+      },
+      {
+        "month": "2023-10",
+        "demand": 140,
+        "naive": 170.0,
+        "rf_in_sample": 154.7
+      },
+      {
+        "month": "2023-11",
+        "demand": 110,
+        "naive": 140.0,
+        "rf_in_sample": 122.9
+      },
+      {
+        "month": "2023-12",
+        "demand": 90,
+        "naive": 110.0,
+        "rf_in_sample": 107.7
+      }
+    ]
+  },
+  "walk_forward": {
+    "window": "Jul–Dec 2023",
+    "design": "Expanding window: each month every model is refitted on earlier months only and forecasts that single month. Forecast-month temperature treated as known (from a weather outlook).",
+    "models": [
+      "Naïve",
+      "Random Forest (lags)",
+      "Random Forest (lags + temp)",
+      "Weather-adjusted regression"
+    ],
+    "rows": [
+      {
+        "month": "2023-07",
+        "demand": 220,
+        "Naïve": 200.0,
+        "Random Forest (lags)": 192.8,
+        "Random Forest (lags + temp)": 192.8,
+        "Weather-adjusted regression": 224.5
+      },
+      {
+        "month": "2023-08",
+        "demand": 210,
+        "Naïve": 220.0,
+        "Random Forest (lags)": 211.0,
+        "Random Forest (lags + temp)": 211.0,
+        "Weather-adjusted regression": 246.2
+      },
+      {
+        "month": "2023-09",
+        "demand": 170,
+        "Naïve": 210.0,
+        "Random Forest (lags)": 214.2,
+        "Random Forest (lags + temp)": 212.0,
+        "Weather-adjusted regression": 213.5
+      },
+      {
+        "month": "2023-10",
+        "demand": 140,
+        "Naïve": 170.0,
+        "Random Forest (lags)": 192.8,
+        "Random Forest (lags + temp)": 186.1,
+        "Weather-adjusted regression": 131.9
+      },
+      {
+        "month": "2023-11",
+        "demand": 110,
+        "Naïve": 140.0,
+        "Random Forest (lags)": 172.9,
+        "Random Forest (lags + temp)": 161.9,
+        "Weather-adjusted regression": 104.0
+      },
+      {
+        "month": "2023-12",
+        "demand": 90,
+        "Naïve": 110.0,
+        "Random Forest (lags)": 139.1,
+        "Random Forest (lags + temp)": 143.4,
+        "Weather-adjusted regression": 75.7
+      }
+    ],
+    "scores": [
+      {
+        "model": "Weather-adjusted regression",
+        "mape": 12.0,
+        "wape": 11.98,
+        "wape_change_vs_naive_pp": -3.98
+      },
+      {
+        "model": "Naïve",
+        "mape": 18.05,
+        "wape": 15.96,
+        "wape_change_vs_naive_pp": 0.0
+      },
+      {
+        "model": "Random Forest (lags + temp)",
+        "mape": 29.5,
+        "wape": 23.57,
+        "wape_change_vs_naive_pp": 7.62
+      },
+      {
+        "model": "Random Forest (lags)",
+        "mape": 31.38,
+        "wape": 25.23,
+        "wape_change_vs_naive_pp": 9.28
+      }
+    ],
+    "weather_regression_full_year": {
+      "intercept": -1.21,
+      "beta": 7.37,
+      "formula": "dDemand = α + β × dTemp"
+    }
+  },
+  "impact": {
+    "total_demand_jul_dec": 940,
+    "rows": [
+      {
+        "model": "Weather-adjusted regression",
+        "stockout_units": 28.4,
+        "excess_units": 84.2,
+        "total_units": 112.6,
+        "share_pct": 12.0
+      },
+      {
+        "model": "Naïve",
+        "stockout_units": 20.0,
+        "excess_units": 130.0,
+        "total_units": 150.0,
+        "share_pct": 16.0
+      },
+      {
+        "model": "Random Forest (lags + temp)",
+        "stockout_units": 27.2,
+        "excess_units": 194.4,
+        "total_units": 221.6,
+        "share_pct": 23.6
+      },
+      {
+        "model": "Random Forest (lags)",
+        "stockout_units": 27.2,
+        "excess_units": 210.0,
+        "total_units": 237.2,
+        "share_pct": 25.2
+      }
+    ]
+  },
+  "notebook_sections": {
+    "naive": "1.7",
+    "in_sample": "1.8",
+    "walk_forward": "1.9",
+    "impact": "1.10",
+    "findings": "1.11",
+    "conclusion": "1.12"
+  }
+}

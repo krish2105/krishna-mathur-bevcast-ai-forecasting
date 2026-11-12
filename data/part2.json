@@ -1,0 +1,578 @@
+{
+  "title": "Part 2 · Lab Activity Exercise: Forecasting Monthly Sales for a New Beverage Product",
+  "source_label": "proxy",
+  "series": {
+    "id": "IPN31211N",
+    "name": "Industrial Production: Manufacturing: Non-Durable Goods: Soft Drink and Ice",
+    "publisher": "Board of Governors of the Federal Reserve System (US), via FRED, Federal Reserve Bank of St. Louis",
+    "url": "https://fred.stlouisfed.org/series/IPN31211N",
+    "unit": "Index 2017 = 100, not seasonally adjusted",
+    "coverage": "NAICS 31211: soft drinks and bottled water (incl. flavored water)",
+    "proxy_note": "Category-level US production index used as a proxy. It is not the company's own sales.",
+    "window": {
+      "from": "2012-01",
+      "to": "2026-09",
+      "n_months": 177
+    },
+    "full_history": {
+      "from": "1972-01",
+      "to": "2026-09",
+      "rows": 657
+    },
+    "notebook_retrieval": "Source: FRED live download | retrieved: 2026-11-12 09:37 UTC",
+    "stats": {
+      "count": 177.0,
+      "mean": 101.84,
+      "std": 7.53,
+      "min": 88.86,
+      "25%": 95.74,
+      "50%": 99.99,
+      "75%": 107.9,
+      "max": 119.42
+    },
+    "quality": {
+      "missing": 0,
+      "duplicates": 0,
+      "frequency": "MS",
+      "largest_yoy_moves": [
+        {
+          "month": "2025-07",
+          "abs_yoy_pct": 15.6
+        },
+        {
+          "month": "2025-06",
+          "abs_yoy_pct": 13.8
+        },
+        {
+          "month": "2025-08",
+          "abs_yoy_pct": 12.3
+        },
+        {
+          "month": "2016-09",
+          "abs_yoy_pct": 12.2
+        }
+      ]
+    }
+  },
+  "decomposition": {
+    "method": "STL (period 12, robust)",
+    "strength_seasonal": 0.59,
+    "strength_trend": 0.93
+  },
+  "seasonal_index": [
+    {
+      "month": "Jan",
+      "index": 0.973
+    },
+    {
+      "month": "Feb",
+      "index": 0.982
+    },
+    {
+      "month": "Mar",
+      "index": 0.99
+    },
+    {
+      "month": "Apr",
+      "index": 0.995
+    },
+    {
+      "month": "May",
+      "index": 1.011
+    },
+    {
+      "month": "Jun",
+      "index": 1.021
+    },
+    {
+      "month": "Jul",
+      "index": 1.028
+    },
+    {
+      "month": "Aug",
+      "index": 1.02
+    },
+    {
+      "month": "Sep",
+      "index": 1.026
+    },
+    {
+      "month": "Oct",
+      "index": 0.995
+    },
+    {
+      "month": "Nov",
+      "index": 0.98
+    },
+    {
+      "month": "Dec",
+      "index": 0.978
+    }
+  ],
+  "features": {
+    "list": [
+      "lag1",
+      "lag2",
+      "lag3",
+      "lag12",
+      "roll3",
+      "roll12",
+      "month_sin",
+      "month_cos"
+    ],
+    "correlation_with_target": {
+      "lag1": 0.94,
+      "lag2": 0.894,
+      "lag3": 0.85,
+      "lag12": 0.741,
+      "roll3": 0.918,
+      "roll12": 0.858,
+      "month_sin": -0.114,
+      "month_cos": -0.217
+    },
+    "supervised_shape": [
+      165,
+      8
+    ]
+  },
+  "sarima": {
+    "order": [
+      1,
+      1,
+      2
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      1,
+      12
+    ],
+    "label": "SARIMA(1, 1, 2)x(1, 1, 1, 12)",
+    "candidates": 36,
+    "top5": [
+      {
+        "order": "(1, 1, 2)",
+        "seasonal_order": "(1, 1, 1, 12)",
+        "aic": 628.1
+      },
+      {
+        "order": "(2, 1, 2)",
+        "seasonal_order": "(1, 1, 1, 12)",
+        "aic": 630.4
+      },
+      {
+        "order": "(0, 1, 2)",
+        "seasonal_order": "(0, 1, 1, 12)",
+        "aic": 632.0
+      },
+      {
+        "order": "(0, 1, 2)",
+        "seasonal_order": "(1, 1, 1, 12)",
+        "aic": 632.0
+      },
+      {
+        "order": "(2, 1, 1)",
+        "seasonal_order": "(1, 1, 1, 12)",
+        "aic": 633.0
+      }
+    ]
+  },
+  "split": {
+    "train": {
+      "from": "2012-01",
+      "to": "2025-09",
+      "n": 165
+    },
+    "test": {
+      "from": "2025-10",
+      "to": "2026-09",
+      "n": 12
+    }
+  },
+  "models": [
+    "Naïve",
+    "Seasonal Naïve",
+    "SARIMA",
+    "Holt-Winters",
+    "Random Forest",
+    "XGBoost"
+  ],
+  "holdout": {
+    "label": "Hold-out test year Oct 2025 – Sep 2026 (12-month horizon from one origin)",
+    "scores": [
+      {
+        "model": "XGBoost",
+        "mape": 1.58,
+        "wape": 1.57,
+        "rmse": 1.87,
+        "bias_pct": 0.49,
+        "wape_improvement_vs_naive_pct": 39.37
+      },
+      {
+        "model": "Holt-Winters",
+        "mape": 1.7,
+        "wape": 1.71,
+        "rmse": 2.15,
+        "bias_pct": -1.38,
+        "wape_improvement_vs_naive_pct": 34.0
+      },
+      {
+        "model": "Random Forest",
+        "mape": 2.26,
+        "wape": 2.22,
+        "rmse": 2.66,
+        "bias_pct": 1.72,
+        "wape_improvement_vs_naive_pct": 14.29
+      },
+      {
+        "model": "Naïve",
+        "mape": 2.64,
+        "wape": 2.59,
+        "rmse": 3.1,
+        "bias_pct": 2.3,
+        "wape_improvement_vs_naive_pct": 0.0
+      },
+      {
+        "model": "Seasonal Naïve",
+        "mape": 2.66,
+        "wape": 2.64,
+        "rmse": 3.08,
+        "bias_pct": 1.37,
+        "wape_improvement_vs_naive_pct": -1.93
+      },
+      {
+        "model": "SARIMA",
+        "mape": 2.71,
+        "wape": 2.73,
+        "rmse": 2.96,
+        "bias_pct": -2.65,
+        "wape_improvement_vs_naive_pct": -5.32
+      }
+    ]
+  },
+  "backtest": {
+    "label": "Rolling-origin backtest: 18 origins × 3 months = 54 forecasts",
+    "origins": 18,
+    "horizon": 3,
+    "n_forecasts": 54,
+    "scores": [
+      {
+        "model": "XGBoost",
+        "mape": 2.14,
+        "wape": 2.14,
+        "rmse": 2.56,
+        "bias_pct": 0.14
+      },
+      {
+        "model": "Naïve",
+        "mape": 2.28,
+        "wape": 2.28,
+        "rmse": 2.72,
+        "bias_pct": -0.15
+      },
+      {
+        "model": "Random Forest",
+        "mape": 2.29,
+        "wape": 2.29,
+        "rmse": 2.62,
+        "bias_pct": 0.48
+      },
+      {
+        "model": "SARIMA",
+        "mape": 2.39,
+        "wape": 2.39,
+        "rmse": 2.74,
+        "bias_pct": 0.35
+      },
+      {
+        "model": "Holt-Winters",
+        "mape": 2.68,
+        "wape": 2.68,
+        "rmse": 3.02,
+        "bias_pct": 0.5
+      },
+      {
+        "model": "Seasonal Naïve",
+        "mape": 6.1,
+        "wape": 6.08,
+        "rmse": 7.65,
+        "bias_pct": 5.32
+      }
+    ]
+  },
+  "best_model": "XGBoost",
+  "selection_rule": "Lowest WAPE on the 3-month rolling backtest (matches the business horizon).",
+  "future": {
+    "last_actual": {
+      "month": "2026-09",
+      "value": 95.95
+    },
+    "rows": [
+      {
+        "month": "2026-10",
+        "Naïve": 95.9524,
+        "Seasonal Naïve": 94.569,
+        "SARIMA": 93.8756,
+        "Holt-Winters": 93.2458,
+        "Random Forest": 96.0387,
+        "XGBoost": 95.301,
+        "sarima_pi80": [
+          91.1436,
+          96.6076
+        ],
+        "sarima_pi95": [
+          89.6974,
+          98.0538
+        ]
+      },
+      {
+        "month": "2026-11",
+        "Naïve": 95.9524,
+        "Seasonal Naïve": 92.9724,
+        "SARIMA": 91.8712,
+        "Holt-Winters": 91.7257,
+        "Random Forest": 96.8086,
+        "XGBoost": 94.9254,
+        "sarima_pi80": [
+          88.3659,
+          95.3765
+        ],
+        "sarima_pi95": [
+          86.5104,
+          97.232
+        ]
+      },
+      {
+        "month": "2026-12",
+        "Naïve": 95.9524,
+        "Seasonal Naïve": 89.7406,
+        "SARIMA": 90.5448,
+        "Holt-Winters": 91.689,
+        "Random Forest": 96.7934,
+        "XGBoost": 93.5291,
+        "sarima_pi80": [
+          86.6406,
+          94.449
+        ],
+        "sarima_pi95": [
+          84.5738,
+          96.5158
+        ]
+      }
+    ]
+  },
+  "shape": {
+    "actual_amplitude_pct": 9.6,
+    "actual_peak_month": "Jul",
+    "rows": [
+      {
+        "model": "Naïve",
+        "amplitude_pct": 0.0,
+        "shape_corr": null,
+        "peak_month": "Oct"
+      },
+      {
+        "model": "Seasonal Naïve",
+        "amplitude_pct": 5.87,
+        "shape_corr": -0.03,
+        "peak_month": "Oct"
+      },
+      {
+        "model": "SARIMA",
+        "amplitude_pct": 4.66,
+        "shape_corr": 0.7,
+        "peak_month": "Jul"
+      },
+      {
+        "model": "Holt-Winters",
+        "amplitude_pct": 5.76,
+        "shape_corr": 0.66,
+        "peak_month": "Jul"
+      },
+      {
+        "model": "Random Forest",
+        "amplitude_pct": 2.67,
+        "shape_corr": 0.31,
+        "peak_month": "Apr"
+      },
+      {
+        "model": "XGBoost",
+        "amplitude_pct": 6.05,
+        "shape_corr": 0.59,
+        "peak_month": "Sep"
+      }
+    ]
+  },
+  "first_year": {
+    "label": "Only the 12 months before the test period used as the product's 'first year'",
+    "window": {
+      "from": "2024-10",
+      "to": "2025-09"
+    },
+    "scores": [
+      {
+        "model": "Seasonal-index transfer (first year + category pattern)",
+        "mape": 1.75,
+        "wape": 1.76,
+        "rmse": 2.17,
+        "bias_pct": -1.41
+      },
+      {
+        "model": "Random Forest lags 1–2 (first year only)",
+        "mape": 2.16,
+        "wape": 2.13,
+        "rmse": 2.6,
+        "bias_pct": 0.86
+      },
+      {
+        "model": "Naïve (first year only)",
+        "mape": 2.64,
+        "wape": 2.59,
+        "rmse": 3.1,
+        "bias_pct": 2.3
+      }
+    ],
+    "category_seasonal_index": [
+      {
+        "month": "Jan",
+        "index": 0.9738
+      },
+      {
+        "month": "Feb",
+        "index": 0.977
+      },
+      {
+        "month": "Mar",
+        "index": 0.9867
+      },
+      {
+        "month": "Apr",
+        "index": 0.9975
+      },
+      {
+        "month": "May",
+        "index": 1.013
+      },
+      {
+        "month": "Jun",
+        "index": 1.0193
+      },
+      {
+        "month": "Jul",
+        "index": 1.0271
+      },
+      {
+        "month": "Aug",
+        "index": 1.02
+      },
+      {
+        "month": "Sep",
+        "index": 1.0274
+      },
+      {
+        "month": "Oct",
+        "index": 0.9956
+      },
+      {
+        "month": "Nov",
+        "index": 0.9808
+      },
+      {
+        "month": "Dec",
+        "index": 0.9817
+      }
+    ]
+  },
+  "feature_importance": {
+    "note": "Not printed in the notebook. Computed by the export script with the notebook's own model constructors and features, trained on the same window as the hold-out test (Jan 2012 – Sep 2025).",
+    "features": [
+      "lag1",
+      "lag2",
+      "lag3",
+      "lag12",
+      "roll3",
+      "roll12",
+      "month_sin",
+      "month_cos"
+    ],
+    "random_forest": [
+      0.7737,
+      0.0338,
+      0.0117,
+      0.0257,
+      0.1106,
+      0.0183,
+      0.0101,
+      0.0161
+    ],
+    "xgboost": [
+      0.6642,
+      0.0426,
+      0.0174,
+      0.0179,
+      0.1447,
+      0.0195,
+      0.0348,
+      0.059
+    ]
+  },
+  "notebook_llm": {
+    "label": "Notebook run: rule-based fallback, not LLM output",
+    "backend": "OFFLINE FALLBACK: rule-based template (no LLM reachable in this runtime)",
+    "markdown": "#### Interpretation generated by: OFFLINE FALLBACK: rule-based template (no LLM reachable in this runtime)\n*Generated 2026-11-12 09:37 UTC*\n\n---\n\n**Seasonality and trend.** SARIMA and Holt-Winters reproduce the annual cycle best; naïve cannot.\n\n**Best model.** XGBoost has the lowest 3-month backtest WAPE (2.14% vs 2.28% for naïve).\n\n**Outlook.** The XGBoost forecast shows a seasonal decline from Oct 2026 to Dec 2026. 16-day outlook (2026-11-12 to 2026-11-27): average daily max across 5 US metros 16.7 °C vs 17.3 °C on the same dates last year (-0.6 °C).\n\n**Recommendations.** Plan production to the XGBoost forecast; hold safety stock to the SARIMA interval; re-run monthly as new FRED data arrive.\n\n**Risk.** Category proxy, not the brand's own sales."
+  },
+  "notebook_weather_snapshot": {
+    "label": "Live weather at notebook run time (snapshot, not current)",
+    "note": "16-day outlook (2026-11-12 to 2026-11-27): average daily max across 5 US metros 16.7 °C vs 17.3 °C on the same dates last year (-0.6 °C).",
+    "rows": [
+      {
+        "City": "New York",
+        "Window": "2026-11-12 to 2026-11-27",
+        "Forecast avg max (°C)": "12.4",
+        "Same dates last year (°C)": "10.1",
+        "Difference (°C)": "2.3"
+      },
+      {
+        "City": "Los Angeles",
+        "Window": "2026-11-12 to 2026-11-27",
+        "Forecast avg max (°C)": "21.2",
+        "Same dates last year (°C)": "19.3",
+        "Difference (°C)": "1.9"
+      },
+      {
+        "City": "Chicago",
+        "Window": "2026-11-12 to 2026-11-27",
+        "Forecast avg max (°C)": "9.2",
+        "Same dates last year (°C)": "9.6",
+        "Difference (°C)": "-0.4"
+      },
+      {
+        "City": "Houston",
+        "Window": "2026-11-12 to 2026-11-27",
+        "Forecast avg max (°C)": "23.2",
+        "Same dates last year (°C)": "26.4",
+        "Difference (°C)": "-3.2"
+      },
+      {
+        "City": "Atlanta",
+        "Window": "2026-11-12 to 2026-11-27",
+        "Forecast avg max (°C)": "17.4",
+        "Same dates last year (°C)": "20.9",
+        "Difference (°C)": "-3.6"
+      }
+    ]
+  },
+  "notebook_sections": {
+    "data": "2.4",
+    "eda": "2.5",
+    "task1": "2.6",
+    "task2": "2.7",
+    "task3": "2.8",
+    "task4": "2.9",
+    "task5": "2.10",
+    "task6": "2.11",
+    "task7": "2.12",
+    "llm": "2.13",
+    "recommendations": "2.14"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "app": "BEVCAST AI",
+  "student": {
+    "name": "Krishna Mathur",
+    "roll": "AS25DXB018",
+    "programme": "MAIB",
+    "batch": "September 2025",
+    "institution": "SP Jain School of Global Management",
+    "subject": "AI in Operations",
+    "assignment": "Problems and Exercises: Session II Lab Activity and Exercise"
+  },
+  "notebook": {
+    "file": "Krishna_Mathur_AS25DXB018_AI_in_Operations_Problems_and_Exercises.ipynb",
+    "notebook_sha256": "ed56ec8b21069d856cc455b86a224c23acd7174ef3f839587b9352a57370780e",
+    "fred_csv_sha256": "df6402f1c449091ec2df87a7f8d525a911552331ffb6396822f7116296285fc2",
+    "temp_csv_sha256": "014567e4f38b3a23ceed18632031f56015440b58e76c6fb1a8c5c5503a4b7717",
+    "executed_with": {
+      "part1": "numpy 2.5.4 | pandas 3.1.1",
+      "part2": "pandas 3.1.1 | scikit-learn 1.9.1 | statsmodels 0.15.0 | xgboost 3.4.1"
+    },
+    "fred_retrieval": "Source: FRED live download | retrieved: 2026-11-12 09:37 UTC"
+  },
+  "export": {
+    "generated_at": "2026-11-12T10:09:53Z",
+    "python": "3.14.7",
+    "pandas": "3.1.1",
+    "numpy": "2.5.4",
+    "scikit_learn": "1.9.1",
+    "statsmodels": "0.15.0",
+    "xgboost": "3.4.1",
+    "assertions_passed": 361
+  },
+  "labels": {
+    "simulated": "Simulated teaching data (professor's reference notebook)",
+    "real": "Real observed data",
+    "proxy": "Category proxy (FRED industry index), not company sales",
+    "live": "Live, fetched at request time"
+  },
+  "sources": [
+    {
+      "id": "fred",
+      "name": "FRED IPN31211N (Soft Drink and Ice production index)",
+      "label": "proxy",
+      "url": "https://fred.stlouisfed.org/series/IPN31211N",
+      "retrieved": "2026-11-12 09:37 UTC (notebook run)"
+    },
+    {
+      "id": "openmeteo_dubai",
+      "name": "Open-Meteo Historical Weather API, Dubai 2023 monthly temperature",
+      "label": "real",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "retrieved": "2026-11-12 (notebook run)"
+    },
+    {
+      "id": "aircooler_demand",
+      "name": "Air-cooler demand Jan–Dec 2023 (professor's reference notebook)",
+      "label": "simulated",
+      "url": null,
+      "retrieved": null
+    }
+  ],
+  "colab_url": "https://colab.research.google.com/drive/12kKbww0iyfHnJuMq4U2py4VnVYjP-Gcy"
+}
