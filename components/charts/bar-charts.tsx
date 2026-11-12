@@ -48,28 +48,28 @@ export function ModelBars({
   digits = 2,
   labelWidth = 150,
   barSize = 12,
-  colorFor = (n: string) => styleFor(n).color,
 }: {
   data: Row[];
-  bars: { key: string; label: string; opacity: number }[];
+  /** `color` fixes one colour for the whole bar series; otherwise each row takes its model colour. */
+  bars: { key: string; label: string; opacity: number; color?: string }[];
   nameKey?: string;
   xLabel: string;
   unit?: string;
   digits?: number;
   labelWidth?: number;
   barSize?: number;
-  colorFor?: (name: string) => string;
 }) {
   const reduce = useReducedMotion();
+  const colorOf = (bar: { color?: string }, row: string) => bar.color ?? styleFor(row).color;
   const height = Math.max(160, data.length * (bars.length * (barSize + 4) + 18) + 48);
   const tip = ({ active, payload, label }: TooltipContentProps) =>
     active && payload?.length ? (
       <TipBox
         title={String(label)}
-        rows={payload.map((p) => ({
+        rows={payload.map((p, i) => ({
           label: String(p.name),
           value: `${Number(p.value).toFixed(digits)}${unit}`,
-          color: colorFor(String(label)),
+          color: colorOf(bars[i] ?? {}, String(label)),
         }))}
       />
     ) : null;
@@ -97,7 +97,7 @@ export function ModelBars({
           {bars.map((b) => (
             <Bar key={b.key} dataKey={b.key} name={b.label} barSize={barSize} radius={[0, 4, 4, 0]} isAnimationActive={!reduce}>
               {data.map((r) => (
-                <Cell key={String(r[nameKey])} fill={colorFor(String(r[nameKey]))} fillOpacity={b.opacity} />
+                <Cell key={String(r[nameKey])} fill={colorOf(b, String(r[nameKey]))} fillOpacity={b.opacity} />
               ))}
               <LabelList
                 dataKey={b.key}

@@ -110,7 +110,7 @@ The in-app engine models reuse the nearest family colour: Holt-Winters (both var
 | Empty | One-line cause plus one action, e.g. "No upload yet: use the reference dataset or upload a CSV" |
 | Error | Plain-language message, what still works, a Retry button. An error boundary per route and a global one. |
 | Fallback (no LLM key) | "Live LLM not configured" notice and a "Rule-based fallback (not AI)" badge; never styled as AI output |
-| Stale live data | A freshness badge turns amber once data are older than 24 h |
+| Live data age | Every live card shows its retrieval time (UTC); ISR re-fetches at most every 6 h, and a failed fetch shows an error card instead of old numbers |
 
 ## Voice
 
