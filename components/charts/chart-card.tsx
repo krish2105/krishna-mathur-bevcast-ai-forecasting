@@ -110,7 +110,7 @@ export function ChartCard({
       <details className="group border-t border-border px-4 py-2 md:px-5" data-print-hide>
         <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 text-xs font-medium text-muted-foreground hover:text-foreground">
           <Table2 className="size-3.5" aria-hidden /> View data
-          <span className="text-muted-foreground/80">({data.length} rows)</span>
+          <span>({data.length} rows)</span>
         </summary>
         <div className="pt-2 pb-2">
           <SimpleTable columns={tableColumns} rows={data} caption={`${title}: data`} maxHeight={280} dense />

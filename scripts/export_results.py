@@ -193,6 +193,8 @@ VOLATILE = ("def load_temperature():", "def load_fred():", "CITIES = {", "PROMPT
             '"llm_backend": llm_backend')  # last one: compared field by field below instead
 
 ns: dict = {"__name__": "__main__", "display": lambda *a, **k: None}
+ns1: dict = {}
+P1_LAST = CELLS.index(cell_by_tag("summary_json_part1"))
 rerun_stdout: dict[int, str] = {}
 cwd = os.getcwd()
 os.chdir(NB_DIR)  # the notebook reads data/<file>.csv relative to itself
@@ -208,6 +210,9 @@ try:
             exec(compile("".join(c["source"]), f"<notebook cell {i}>", "exec"), ns)
         plt.close("all")
         rerun_stdout[i] = buf.getvalue()
+        if i == P1_LAST:
+            # Part 2 re-uses some Part 1 names (e.g. naive_wape), so freeze Part 1's results here.
+            ns1 = dict(ns)
         print(f"  re-ran cell {i:>2}", file=sys.stderr)
 finally:
     os.chdir(cwd)
@@ -257,9 +262,9 @@ def compare_frame(name: str, df, saved: tuple[list[str], list[list[str]]], index
             check(ok, f"{name}[{exp_index}][{col}] = {exp} (re-computed {got})")
 
 
-compare_frame("summary_table_part1 (walk-forward)", ns["oos_scores"], SAVED["summary_table_part1"])
-compare_frame("in-sample table (Part 1)", ns["insample_scores"], SAVED["insample_table_part1"])
-compare_frame("impact table (Part 1)", ns["impact"].round(1), SAVED["impact_table_part1"])
+compare_frame("summary_table_part1 (walk-forward)", ns1["oos_scores"], SAVED["summary_table_part1"])
+compare_frame("in-sample table (Part 1)", ns1["insample_scores"], SAVED["insample_table_part1"])
+compare_frame("impact table (Part 1)", ns1["impact"].round(1), SAVED["impact_table_part1"])
 compare_frame("summary_table_part2 (hold-out)", ns["holdout_scores"].round(2), SAVED["summary_table_part2"])
 compare_frame("backtest_table_part2", ns["backtest_scores"].round(2), SAVED["backtest_table_part2"])
 compare_frame("future_table_part2", ns["future_table"].round(2), SAVED["future_table_part2"],
@@ -325,13 +330,13 @@ def frame_records(df, cols_map: dict[str, str], d=2):
     return out
 
 
-df1 = ns["df"]
+df1 = ns1["df"]
 temp_csv = pd.read_csv(TEMP_CSV)
-wf = ns["wf"]
-preds = ns["preds"]
-ml_df = ns["ml_df"]
-work = ns["work"]
-final_reg = ns["final_reg"]
+wf = ns1["wf"]
+preds = ns1["preds"]
+ml_df = ns1["ml_df"]
+work = ns1["work"]
+final_reg = ns1["final_reg"]
 
 part1 = {
     "title": "Part 1 · Lab Activity: Retail Demand Forecasting for a Seasonal Product (Air Coolers)",
@@ -348,12 +353,12 @@ part1 = {
                      "min": int(df1["Demand"].min()), "max": int(df1["Demand"].max())},
     "temp_stats": {"mean": r(df1["Temp_C"].mean(), 2), "std": r(df1["Temp_C"].std(), 2),
                    "min": r(df1["Temp_C"].min(), 2), "max": r(df1["Temp_C"].max(), 2)},
-    "correlation": round(float(ns["corr"]), 3),
-    "slope_units_per_c": r(ns["slope"], 2),
-    "intercept": r(ns["intercept"], 2),
+    "correlation": round(float(ns1["corr"]), 3),
+    "slope_units_per_c": r(ns1["slope"], 2),
+    "intercept": r(ns1["intercept"], 2),
     "naive": {
         "window": "Feb–Dec 2023",
-        "mape": round(ns["naive_mape"], 2), "wape": round(ns["naive_wape"], 2),
+        "mape": round(ns1["naive_mape"], 2), "wape": round(ns1["naive_wape"], 2),
         "sum_abs_error": r(work["Abs_Error"].sum(), 1), "sum_demand": int(work["Demand"].sum()),
         "rows": [{"month": month(m), "demand": int(d), "forecast": r(f, 1), "abs_error": r(e, 1), "abs_pct_error": r(p, 2)}
                  for m, d, f, e, p in zip(work["Month"], work["Demand"], work["Naive_Forecast"],
@@ -362,7 +367,7 @@ part1 = {
     "in_sample": {
         "window": "Mar–Dec 2023",
         "warning": "Scored on the same months the model was trained on: a measure of fit, not forecasting ability.",
-        "scores": frame_records(ns["insample_scores"], {"Model": "model", "MAPE (%)": "mape", "WAPE (%)": "wape"}),
+        "scores": frame_records(ns1["insample_scores"], {"Model": "model", "MAPE (%)": "mape", "WAPE (%)": "wape"}),
         "rows": [{"month": month(m), "demand": int(d), "naive": r(n, 1), "rf_in_sample": r(f, 2)}
                  for m, d, n, f in zip(ml_df["Month"], ml_df["Demand"], ml_df["Naive_Forecast"], ml_df["RF_InSample"])],
     },
@@ -373,14 +378,14 @@ part1 = {
         "models": list(preds.keys()),
         "rows": [{"month": month(m), "demand": int(d), **{k: r(wf.loc[i, k], 1) for k in preds}}
                  for i, m, d in zip(wf.index, wf["Month"], wf["Demand"])],
-        "scores": frame_records(ns["oos_scores"], {"Model": "model", "MAPE (%)": "mape", "WAPE (%)": "wape",
+        "scores": frame_records(ns1["oos_scores"], {"Model": "model", "MAPE (%)": "mape", "WAPE (%)": "wape",
                                                    "WAPE change vs Naïve (pp)": "wape_change_vs_naive_pp"}),
         "weather_regression_full_year": {"intercept": r(final_reg.intercept_, 2), "beta": r(final_reg.coef_[0], 2),
                                          "formula": "dDemand = α + β × dTemp"},
     },
     "impact": {
         "total_demand_jul_dec": int(wf["Demand"].sum()),
-        "rows": frame_records(ns["impact"], {"Model": "model", "Stockout units (under-forecast)": "stockout_units",
+        "rows": frame_records(ns1["impact"], {"Model": "model", "Stockout units (under-forecast)": "stockout_units",
                                              "Excess units (over-forecast)": "excess_units",
                                              "Total units mis-planned": "total_units",
                                              "Share of Jul–Dec demand (%)": "share_pct"}, d=1),
@@ -388,6 +393,18 @@ part1 = {
     "notebook_sections": {"naive": "1.7", "in_sample": "1.8", "walk_forward": "1.9", "impact": "1.10",
                           "findings": "1.11", "conclusion": "1.12"},
 }
+
+# Exported Part 1 numbers must equal the notebook's Part 1 summary JSON (guards against name re-use)
+check(part1["naive"]["mape"] == S1["naive_feb_dec"]["MAPE"] and part1["naive"]["wape"] == S1["naive_feb_dec"]["WAPE"],
+      "part1.json naive Feb-Dec equals notebook (17.35 / 15.84)")
+check(part1["correlation"] == S1["demand_temp_correlation"], "part1.json correlation equals notebook")
+check({r["model"]: r["total_units"] for r in part1["impact"]["rows"]} == S1["units_misplanned_jul_dec"],
+      "part1.json units mis-planned equal notebook")
+check({r["model"]: {"MAPE (%)": r["mape"], "WAPE (%)": r["wape"]} for r in part1["walk_forward"]["scores"]} == S1["walk_forward_jul_dec"],
+      "part1.json walk-forward scores equal notebook")
+check({r["model"]: {"MAPE (%)": r["mape"], "WAPE (%)": r["wape"]} for r in part1["in_sample"]["scores"]} == S1["in_sample_mar_dec"],
+      "part1.json in-sample scores equal notebook")
+check(abs(part1["naive"]["sum_abs_error"] - 270) < 1e-9 and part1["naive"]["sum_demand"] == 1705, "part1.json naive working 270 / 1705")
 
 sales = ns["sales"]
 test = ns["test"]

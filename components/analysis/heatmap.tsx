@@ -10,7 +10,7 @@ export function YearMonthHeatmap({ rows }: { rows: { year: number; values: (numb
   const max = Math.max(...all);
   const shade = (v: number) => {
     const t = (v - min) / (max - min || 1);
-    return `color-mix(in oklab, var(--primary) ${Math.round(8 + t * 80)}%, var(--card))`;
+    return `color-mix(in oklab, var(--primary) ${Math.round(6 + t * 49)}%, var(--card))`; // capped so body text stays >= 5:1
   };
   return (
     <div className="space-y-3">
@@ -36,7 +36,6 @@ export function YearMonthHeatmap({ rows }: { rows: { year: number; values: (numb
                   {r.year}
                 </th>
                 {r.values.map((v, i) => {
-                  const t = v === null ? 0 : (v - min) / (max - min || 1);
                   return (
                     <td
                       key={i}
@@ -44,7 +43,7 @@ export function YearMonthHeatmap({ rows }: { rows: { year: number; values: (numb
                       className="h-7 rounded-[4px] text-center tabular-nums"
                       style={{
                         background: v === null ? "transparent" : shade(v),
-                        color: t > 0.55 ? "var(--primary-foreground)" : "var(--foreground)",
+                        color: "var(--foreground)",
                         border: v === null ? "1px dashed var(--border)" : undefined,
                       }}
                     >
@@ -62,7 +61,7 @@ export function YearMonthHeatmap({ rows }: { rows: { year: number; values: (numb
         <span
           aria-hidden
           className="h-2 w-40 rounded-full"
-          style={{ background: "linear-gradient(90deg, color-mix(in oklab, var(--primary) 8%, var(--card)), color-mix(in oklab, var(--primary) 88%, var(--card)))" }}
+          style={{ background: "linear-gradient(90deg, color-mix(in oklab, var(--primary) 6%, var(--card)), color-mix(in oklab, var(--primary) 55%, var(--card)))" }}
         />
         <span>{max.toFixed(1)}</span>
         <span>index (2017 = 100); darker = higher production</span>

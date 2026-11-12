@@ -21,14 +21,14 @@
     "fred_retrieval": "Source: FRED live download | retrieved: 2026-11-12 09:37 UTC"
   },
   "export": {
-    "generated_at": "2026-11-12T10:17:16Z",
+    "generated_at": "2026-11-12T11:06:04Z",
     "python": "3.14.7",
     "pandas": "3.1.1",
     "numpy": "2.5.4",
     "scikit_learn": "1.9.1",
     "statsmodels": "0.15.0",
     "xgboost": "3.4.1",
-    "assertions_passed": 361
+    "assertions_passed": 368
   },
   "labels": {
     "simulated": "Simulated teaching data (professor's reference notebook)",

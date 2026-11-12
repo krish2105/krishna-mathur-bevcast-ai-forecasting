@@ -50,7 +50,7 @@ export function SeriesLegend({
             disabled={!onToggle}
             className={cn(
               "inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-xs transition-colors hover:bg-muted disabled:cursor-default disabled:hover:bg-transparent",
-              off ? "text-muted-foreground line-through opacity-60" : "text-foreground",
+              off ? "text-muted-foreground line-through" : "text-foreground",
             )}
           >
             <LineSwatch name={it.style ?? it.name} color={it.color} />

@@ -114,9 +114,13 @@ export function ForecastLab({
 
   return (
     <Tabs value={tab} onValueChange={(v) => setParams({ tab: v })} className="space-y-6">
-      <TabsList className="h-auto flex-wrap">
-        <TabsTrigger value="engine">In-app engine results (TypeScript)</TabsTrigger>
-        <TabsTrigger value="reference">Reference results (notebook, Python: SARIMA, Random Forest, XGBoost…)</TabsTrigger>
+      <TabsList className="h-auto w-full flex-col items-stretch sm:w-fit sm:flex-row">
+        <TabsTrigger value="engine" className="h-auto py-1.5 whitespace-normal">
+          In-app engine results (TypeScript)
+        </TabsTrigger>
+        <TabsTrigger value="reference" className="h-auto py-1.5 whitespace-normal">
+          Reference results (notebook, Python: SARIMA, Random Forest, XGBoost…)
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="engine" className="space-y-6">
@@ -239,7 +243,7 @@ export function ForecastLab({
                   header: "Model",
                   cell: (r) =>
                     r.status === "evaluated" ? (
-                      <button type="button" className="text-left font-medium text-primary hover:underline" onClick={() => setSelected(r.id)}>
+                      <button type="button" className="text-left font-medium text-teal-fg underline-offset-2 hover:underline" onClick={() => setSelected(r.id)}>
                         {r.name}
                         {r.id === result.best && <span className="ml-2 rounded bg-primary/10 px-1.5 text-[10px] font-semibold text-teal-fg">BEST</span>}
                       </button>

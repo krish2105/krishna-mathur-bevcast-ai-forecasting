@@ -163,7 +163,7 @@ export default function MethodologyPage() {
           ]}
         />
         <p className="text-xs text-muted-foreground">
-          Reference results: <code className="font-mono">{meta.notebook.file}</code> (SHA-256 {meta.notebook.notebook_sha256.slice(0, 16)}…), re-verified by{" "}
+          Reference results: <code className="font-mono break-all">{meta.notebook.file}</code> (SHA-256 {meta.notebook.notebook_sha256.slice(0, 16)}…), re-verified by{" "}
           <code className="font-mono">scripts/export_results.py</code> with {meta.export.assertions_passed} passing assertions. {meta.notebook.executed_with.part2}.
         </p>
       </Section>

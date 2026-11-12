@@ -1,0 +1,38 @@
+{
+  "copilot": {
+    "url": "http://localhost:3100/copilot",
+    "fetchTime": "2026-11-12T11:01:16.298Z",
+    "preset": "desktop",
+    "lighthouse": "13.6.0",
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 96,
+      "seo": 100
+    }
+  },
+  "models": {
+    "url": "http://localhost:3100/models",
+    "fetchTime": "2026-11-12T11:01:05.136Z",
+    "preset": "desktop",
+    "lighthouse": "13.6.0",
+    "scores": {
+      "performance": 99,
+      "accessibility": 98,
+      "best-practices": 100,
+      "seo": 100
+    }
+  },
+  "overview": {
+    "url": "http://localhost:3100/",
+    "fetchTime": "2026-11-12T11:00:53.543Z",
+    "preset": "desktop",
+    "lighthouse": "13.6.0",
+    "scores": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    }
+  }
+}

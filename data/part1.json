@@ -98,7 +98,7 @@
   "naive": {
     "window": "Feb–Dec 2023",
     "mape": 17.35,
-    "wape": 2.59,
+    "wape": 15.84,
     "sum_abs_error": 270.0,
     "sum_demand": 1705,
     "rows": [

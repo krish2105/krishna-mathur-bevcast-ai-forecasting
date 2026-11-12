@@ -21,6 +21,8 @@ export const metadata: Metadata = {
 
 export const revalidate = 21600; // 6 h ISR: live feeds are re-fetched at most every 6 hours
 
+const CITY_CODE: Record<string, string> = { "New York": "NYC", "Los Angeles": "LA", Chicago: "CHI", Houston: "HOU", Atlanta: "ATL", Dubai: "DXB" };
+
 function utc(iso: string) {
   return `${new Date(iso).toISOString().slice(0, 16).replace("T", " ")} UTC`;
 }
@@ -74,7 +76,13 @@ export default async function LivePage() {
           label="Largest revision vs notebook copy"
           value={fred.maxRevision ? fred.maxRevision.diff.toFixed(2) : fred.ok ? "0.00" : "n/a"}
           unit={fred.ok ? "index pts" : undefined}
-          sub={fred.maxRevision ? `${monthLabel(fred.maxRevision.month)} (last 36 months checked)` : "No overlap"}
+          sub={
+            fred.maxRevision && fred.maxRevision.diff !== 0
+              ? `${monthLabel(fred.maxRevision.month)} (last 36 months checked)`
+              : fred.ok
+                ? "No revisions in the last 36 months"
+                : "Feed unavailable"
+          }
         />
         <KpiCard
           label="16-day outlook vs last year (5 US metros)"
@@ -135,18 +143,18 @@ export default async function LivePage() {
           <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
             <ChartCard
               testId="chart-live-weather"
-              title="Difference vs the same dates last year"
+              title="Difference vs the same dates last year (°C)"
               description={<Freshness iso={weather.retrievedAt} />}
               badges={<ProvenanceBadge kind="live" />}
               data={weather.cities.map((c) => ({ city: c.city, forecast_avg_max_c: c.forecastAvgMax, last_year_avg_max_c: c.lastYearAvgMax, diff_c: c.diff }))}
               fileName="weather-live"
             >
               <SignedColumns
-                data={weather.cities.map((c) => ({ city: c.city, diff: c.diff }))}
+                data={weather.cities.map((c) => ({ city: CITY_CODE[c.city] ?? c.city, diff: c.diff }))}
                 valueKey="diff"
                 nameKey="city"
                 yLabel="Difference (°C)"
-                unit=" °C"
+                unit={"\u00a0°C"}
                 digits={1}
                 positiveColor="var(--m-sarima)"
                 negativeColor="var(--m-hw)"

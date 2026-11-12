@@ -108,11 +108,13 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
 
   const { messages, sendMessage, status, stop, regenerate, setMessages, error, clearError } = useChat<Msg>({ transport });
   const [input, setInput] = React.useState(initialPrompt.slice(0, MAX_CHARS));
-  const endRef = React.useRef<HTMLDivElement>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const busy = status === "submitted" || status === "streaming";
 
+  // Scroll the conversation pane only (never the page), and only once there is a conversation.
   React.useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const el = scrollRef.current;
+    if (el && messages.length > 0) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, status]);
 
   const send = (text: string) => {
@@ -138,7 +140,7 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-      <div className="card-surface flex min-h-[560px] min-w-0 flex-col" data-testid="copilot">
+      <div className="card-surface flex h-[min(760px,calc(100dvh-7rem))] min-h-[520px] min-w-0 flex-col" data-testid="copilot">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Bot className="size-4 text-primary" aria-hidden /> BevCast AI Copilot
@@ -163,7 +165,7 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
           </div>
         )}
 
-        <div className="flex-1 space-y-5 overflow-y-auto p-4" aria-live="polite">
+        <div ref={scrollRef} className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4" aria-live="polite">
           {messages.length === 0 && (
             <div className="space-y-4 py-4">
               <div className="text-center">
@@ -258,7 +260,6 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
               </Button>
             </div>
           )}
-          <div ref={endRef} />
         </div>
 
         <form
@@ -318,7 +319,7 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
               <ProvenanceBadge kind="live" className="h-5 text-[10px]" />
               <span className="text-muted-foreground">
                 FRED latest release and the 16-day Open-Meteo outlook, fetched when a question needs them.{" "}
-                <Link href="/live" className="text-primary hover:underline">
+                <Link href="/live" className="text-teal-fg underline underline-offset-2">
                   See signals
                 </Link>
               </span>
@@ -335,7 +336,7 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
                 ) : (
                   <>
                     None in this session.{" "}
-                    <Link href="/data#upload" className="text-primary hover:underline">
+                    <Link href="/data#upload" className="text-teal-fg underline underline-offset-2">
                       Upload a CSV
                     </Link>
                   </>

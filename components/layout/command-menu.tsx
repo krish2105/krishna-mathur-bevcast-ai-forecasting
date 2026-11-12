@@ -5,6 +5,7 @@ import * as React from "react";
 import { useTheme } from "next-themes";
 import { Bot, FileDown, Moon, Sun, Trophy, Compass } from "lucide-react";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -40,6 +41,7 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange} title="Command palette" description="Jump to a page, model or action">
+      <Command>
       <CommandInput placeholder="Search pages, models and actions…" />
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>
@@ -80,6 +82,7 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
           ))}
         </CommandGroup>
       </CommandList>
+      </Command>
     </CommandDialog>
   );
 }

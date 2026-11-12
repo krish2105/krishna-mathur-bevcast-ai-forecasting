@@ -104,7 +104,7 @@ export function AppShell({ children, freshness }: { children: React.ReactNode; f
         )}
       >
         <div className={cn("flex h-14 items-center border-b border-sidebar-border px-4", collapsed && "justify-center px-0")}>
-          <Link href="/" className="flex items-center gap-2.5" aria-label="BEVCAST AI home">
+          <Link href="/" className="flex items-center gap-2.5" aria-label={collapsed ? "BEVCAST AI home" : undefined}>
             <Logo className="size-7" />
             {!collapsed && (
               <span className="leading-tight">
@@ -176,22 +176,23 @@ export function AppShell({ children, freshness }: { children: React.ReactNode; f
             variant="outline"
             size="sm"
             onClick={() => setPaletteOpen(true)}
-            aria-label="Open command palette"
             className="gap-2 text-muted-foreground"
+            data-testid="open-palette"
           >
-            <CommandIcon className="size-3.5" />
-            <span className="hidden sm:inline">Search</span>
+            <CommandIcon className="size-3.5" aria-hidden />
+            <span className="sr-only sm:not-sr-only">Search</span>
             <kbd className="hidden rounded border border-border bg-muted px-1 font-mono text-[10px] sm:inline">⌘K</kbd>
           </Button>
           <ThemeToggle />
           <Link
             href="/about"
             className="hidden items-center gap-2 rounded-full border border-border bg-card py-0.5 pr-3 pl-0.5 text-xs md:inline-flex"
-            aria-label={`${STUDENT.name}, ${STUDENT.roll}`}
+            title={`${STUDENT.name}, ${STUDENT.roll}`}
           >
             <span className="grid size-6 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
-              KM
+              <span aria-hidden>KM</span>
             </span>
+            <span className="sr-only">{STUDENT.name}</span>
             <span className="font-medium">{STUDENT.roll}</span>
           </Link>
         </header>

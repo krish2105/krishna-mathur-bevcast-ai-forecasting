@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
 import {
   CartesianGrid,
   ComposedChart,
@@ -28,7 +27,6 @@ interface MonthRow {
  * same relationship on a single scale.
  */
 export function DemandTempDualAxis({ rows, peak }: { rows: MonthRow[]; peak: { month: string; demand: number } }) {
-  const reduce = useReducedMotion();
   const tip = ({ active, payload, label }: TooltipContentProps) =>
     active && payload?.length ? (
       <div className="rounded-lg border border-border bg-popover px-3 py-2 text-xs shadow-lg">
@@ -78,8 +76,8 @@ export function DemandTempDualAxis({ rows, peak }: { rows: MonthRow[]; peak: { m
               label={{ value: "Temperature (°C)", angle: 90, position: "insideRight", offset: 6, style: { fontSize: 11, fill: "var(--muted-foreground)", textAnchor: "middle" } }}
             />
             <Tooltip content={tip} cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "3 3" }} />
-            <Line yAxisId="d" dataKey="demand" stroke="var(--m-actual)" strokeWidth={2.5} dot={{ r: 3, fill: "var(--m-actual)", strokeWidth: 0 }} isAnimationActive={!reduce} />
-            <Line yAxisId="t" dataKey="temp" stroke="var(--m-temp)" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "var(--m-temp)", strokeWidth: 0 }} isAnimationActive={!reduce} />
+            <Line yAxisId="d" dataKey="demand" stroke="var(--m-actual)" strokeWidth={2.5} dot={{ r: 3, fill: "var(--m-actual)", strokeWidth: 0 }} isAnimationActive={false} />
+            <Line yAxisId="t" dataKey="temp" stroke="var(--m-temp)" strokeWidth={2} strokeDasharray="6 3" dot={{ r: 3, fill: "var(--m-temp)", strokeWidth: 0 }} isAnimationActive={false} />
             <ReferenceDot
               yAxisId="d"
               x={peak.month}
@@ -107,7 +105,6 @@ export function DemandTempScatter({
   slope: number;
   intercept: number;
 }) {
-  const reduce = useReducedMotion();
   const xs = rows.map((r) => r.temp);
   const lo = Math.min(...xs);
   const hi = Math.max(...xs);
@@ -152,8 +149,8 @@ export function DemandTempScatter({
             label={{ value: "Demand (units)", angle: -90, position: "insideLeft", offset: 6, style: { fontSize: 11, fill: "var(--muted-foreground)", textAnchor: "middle" } }}
           />
           <Tooltip content={tip} />
-          <Line data={fit} dataKey="fit" stroke="var(--m-weather)" strokeWidth={2} dot={false} isAnimationActive={!reduce} legendType="none" />
-          <Scatter data={pts} fill="var(--m-actual)" isAnimationActive={!reduce} />
+          <Line data={fit} dataKey="fit" stroke="var(--m-weather)" strokeWidth={2} dot={false} isAnimationActive={false} legendType="none" />
+          <Scatter data={pts} fill="var(--m-actual)" isAnimationActive={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

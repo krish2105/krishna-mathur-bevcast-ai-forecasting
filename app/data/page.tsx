@@ -74,7 +74,7 @@ export default function DataPage() {
               <dd>{s.notebook_retrieval.replace("Source: ", "")}</dd>
               <dt className="text-muted-foreground">Source</dt>
               <dd>
-                <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
+                <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-teal-fg underline underline-offset-2">
                   fred.stlouisfed.org/series/{s.id} <ExternalLink className="size-3" aria-hidden />
                 </a>
               </dd>

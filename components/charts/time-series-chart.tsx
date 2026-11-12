@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useReducedMotion } from "motion/react";
 import {
   Area,
   CartesianGrid,
@@ -80,7 +79,6 @@ export function TimeSeriesChart({
   onHiddenChange,
   legend = true,
 }: Props) {
-  const reduce = useReducedMotion();
   const [localHidden, setLocalHidden] = React.useState<Set<string>>(
     () => new Set(series.filter((s) => s.defaultHidden).map((s) => s.key)),
   );
@@ -198,7 +196,7 @@ export function TimeSeriesChart({
                 stroke="none"
                 fill={b.color}
                 fillOpacity={b.opacity}
-                isAnimationActive={!reduce}
+                isAnimationActive={false}
                 connectNulls={false}
                 activeDot={false}
               />
@@ -209,7 +207,7 @@ export function TimeSeriesChart({
                 x={d.x}
                 stroke="var(--muted-foreground)"
                 strokeDasharray="4 4"
-                label={{ value: d.label, position: "insideTopLeft", fontSize: 11, fill: "var(--muted-foreground)" }}
+                label={{ value: d.label, position: d.label === "forecast" ? "insideTopRight" : "insideTopLeft", fontSize: 11, fill: "var(--muted-foreground)" }}
               />
             ))}
             {series.map((s) => {
@@ -228,7 +226,7 @@ export function TimeSeriesChart({
                   dot={s.dots ? { r: 2.5, strokeWidth: 0, fill: st.color } : false}
                   activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--card)" }}
                   connectNulls={false}
-                  isAnimationActive={!reduce}
+                  isAnimationActive={false}
                   animationDuration={600}
                 />
               );

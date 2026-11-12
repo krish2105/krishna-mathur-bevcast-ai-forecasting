@@ -130,7 +130,7 @@ export function ExecutiveSummary() {
               )}
             </span>
             {data.tools.length > 0 && <span>Tools: {data.tools.join(", ")}</span>}
-            <Link href="/copilot" className="text-primary underline-offset-2 hover:underline">
+            <Link href="/copilot" className="text-teal-fg underline underline-offset-2">
               Ask a follow-up →
             </Link>
           </span>

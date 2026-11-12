@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
 import {
   Bar,
   BarChart,
@@ -59,7 +58,6 @@ export function ModelBars({
   labelWidth?: number;
   barSize?: number;
 }) {
-  const reduce = useReducedMotion();
   const colorOf = (bar: { color?: string }, row: string) => bar.color ?? styleFor(row).color;
   const height = Math.max(160, data.length * (bars.length * (barSize + 4) + 18) + 48);
   const tip = ({ active, payload, label }: TooltipContentProps) =>
@@ -95,7 +93,7 @@ export function ModelBars({
           />
           <Tooltip content={tip} cursor={{ fill: "var(--muted)", opacity: 0.6 }} />
           {bars.map((b) => (
-            <Bar key={b.key} dataKey={b.key} name={b.label} barSize={barSize} radius={[0, 4, 4, 0]} isAnimationActive={!reduce}>
+            <Bar key={b.key} dataKey={b.key} name={b.label} barSize={barSize} radius={[0, 4, 4, 0]} isAnimationActive={false}>
               {data.map((r) => (
                 <Cell key={String(r[nameKey])} fill={colorOf(b, String(r[nameKey]))} fillOpacity={b.opacity} />
               ))}
@@ -137,7 +135,6 @@ export function SignedColumns({
   negativeColor?: string;
   showLabels?: boolean;
 }) {
-  const reduce = useReducedMotion();
   const tip = ({ active, payload, label }: TooltipContentProps) =>
     active && payload?.length ? (
       <TipBox
@@ -160,7 +157,7 @@ export function SignedColumns({
           />
           <Tooltip content={tip} cursor={{ fill: "var(--muted)", opacity: 0.6 }} />
           <ReferenceLine y={0} stroke="var(--muted-foreground)" />
-          <Bar dataKey={valueKey} radius={4} isAnimationActive={!reduce} maxBarSize={36}>
+          <Bar dataKey={valueKey} radius={4} isAnimationActive={false} maxBarSize={36}>
             {data.map((r, i) => (
               <Cell key={i} fill={Number(r[valueKey]) >= 0 ? positiveColor : negativeColor} />
             ))}
@@ -195,7 +192,6 @@ export function StackedBars({
   labelWidth?: number;
   digits?: number;
 }) {
-  const reduce = useReducedMotion();
   const tip = ({ active, payload, label }: TooltipContentProps) =>
     active && payload?.length ? (
       <TipBox
@@ -228,7 +224,7 @@ export function StackedBars({
               radius={i === stacks.length - 1 ? [0, 4, 4, 0] : 0}
               stroke="var(--card)"
               strokeWidth={1}
-              isAnimationActive={!reduce}
+              isAnimationActive={false}
             />
           ))}
         </BarChart>

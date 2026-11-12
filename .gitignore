@@ -55,3 +55,8 @@ __pycache__/
 # logs and local-only data (uploaded CSVs are never stored or committed)
 *.log
 /uploads/
+
+# QA artefacts: full reports stay local, summaries are committed
+/docs/screenshots/local/
+/docs/qa/lighthouse-local-*.json
+/docs/qa/lighthouse-production-*.json

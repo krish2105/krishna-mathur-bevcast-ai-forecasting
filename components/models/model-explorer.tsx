@@ -9,7 +9,6 @@ import { LineSwatch } from "@/components/charts/series-legend";
 import { TimeSeriesChart, type ChartRow } from "@/components/charts/time-series-chart";
 import { InfoTip } from "@/components/common/info-tip";
 import { ProvenanceBadge } from "@/components/common/provenance-badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 export interface Score {
@@ -91,12 +90,27 @@ export function ModelExplorer({
     <div className="space-y-8">
       <div className="space-y-4" id="leaderboard">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Tabs value={evaluation} onValueChange={(v) => setParam("evaluation", v)}>
-            <TabsList>
-              <TabsTrigger value="holdout">Hold-out (12 months)</TabsTrigger>
-              <TabsTrigger value="backtest">3-month backtest (54 forecasts)</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div role="group" aria-label="Evaluation" className="inline-flex w-fit flex-wrap rounded-lg bg-muted p-1" data-testid="evaluation-switch">
+            {(
+              [
+                ["holdout", "Hold-out (12 months)"],
+                ["backtest", "3-month backtest (54 forecasts)"],
+              ] as const
+            ).map(([v, label]) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={evaluation === v}
+                onClick={() => setParam("evaluation", v)}
+                className={cn(
+                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                  evaluation === v ? "bg-card text-foreground shadow-sm" : "text-foreground/75 hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <ProvenanceBadge kind="reference" />
             <InfoTip term={evaluation === "holdout" ? "holdout" : "backtest"} />

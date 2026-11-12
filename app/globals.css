@@ -87,7 +87,7 @@
   --critical: #d94b4b;
   --critical-fg: #b42318;
   --success: #1e7b4f;
-  --success-fg: #1e7b4f;
+  --success-fg: #17663f;
   --info-fg: #2a6ab0;
   --violet-fg: #6941c6;
   --teal-fg: #0f6e78;
@@ -193,6 +193,10 @@
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
+  }
+  /* Grid items may shrink below their content (wide tables then scroll inside their own container). */
+  .grid > * {
+    min-width: 0;
   }
 }
 
