@@ -61,3 +61,4 @@ __pycache__/
 /docs/screenshots/local/
 /docs/qa/lighthouse-local-*.json
 /docs/qa/lighthouse-production-*.json
+/docs/screenshots/production/
