@@ -184,7 +184,7 @@ export default function MethodologyPage() {
         <p className="text-sm text-muted-foreground">
           <strong>Not found.</strong> The slides refer to Day 10 of RDMU for LLM integration. No Day 10 RDMU material was found on this computer, so its
           contents are not assumed. The notebook follows the professor&apos;s reference Colab, which calls <code className="font-mono">google.colab.ai</code>
-          ; this web app calls Claude through the Vercel AI SDK with tool calling and a labelled rule-based fallback.
+          ; this web app calls Google Gemini through the Vercel AI SDK with tool calling and a labelled rule-based fallback.
         </p>
       </Section>
 

@@ -160,7 +160,7 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
             <TriangleAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden />
             <span>
               <strong>Live LLM not configured.</strong> Answers below are a deterministic, data-derived <em>rule-based fallback (not AI)</em>. Every number is
-              still real; the wording is fixed templates. Add <code>ANTHROPIC_API_KEY</code> on the server to enable the live Copilot.
+              still real; the wording is fixed templates. Add <code>GOOGLE_GENERATIVE_AI_API_KEY</code> on the server to enable the live Copilot.
             </span>
           </div>
         )}
@@ -349,6 +349,10 @@ export function CopilotChat({ configured, model, initialPrompt = "" }: { configu
           <h2 className="text-sm font-semibold text-foreground">Guardrails</h2>
           <p>Numbers come only from tool results; historical, test and forecast values are kept apart; simulated and proxy data are labelled.</p>
           <p>Text inside uploaded files is treated as data, never as instructions. 10 questions per minute.</p>
+          <p>
+            Questions and any uploaded monthly values are processed by Google&apos;s Gemini API. On Google&apos;s free tier, Google may use this content to
+            improve its products, so do not type personal or confidential data.
+          </p>
         </div>
       </aside>
     </div>

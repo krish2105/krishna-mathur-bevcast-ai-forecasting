@@ -133,10 +133,10 @@ export const COMPLIANCE: ComplianceRow[] = [
     ],
     notebook: "§2.13",
     evidence:
-      "Tool-calling Claude copilot grounded on live FRED and Open-Meteo feeds plus the user's uploaded data; notebook uses google.colab.ai with a labelled fallback",
+      "Tool-calling Google Gemini copilot grounded on live FRED and Open-Meteo feeds plus the user's uploaded data; notebook uses google.colab.ai with a labelled fallback",
     status: "Met (with note)",
   },
 ];
 
 export const COMPLIANCE_NOTE =
-  "Day 10 of RDMU was not found on this computer, so its contents are not assumed. The notebook follows the professor's reference Colab (google.colab.ai). The web app uses the Anthropic API through the Vercel AI SDK. In the saved notebook run no LLM was reachable, so its Section 2.13 shows the clearly labelled rule-based fallback; running it in Colab produces the LLM text.";
+  "Day 10 of RDMU was not found on this computer, so its contents are not assumed. The notebook follows the professor's reference Colab (google.colab.ai). The web app uses the Google Gemini API through the Vercel AI SDK. In the saved notebook run no LLM was reachable, so its Section 2.13 shows the clearly labelled rule-based fallback; running it in Colab produces the LLM text.";

@@ -13,7 +13,7 @@ const STACK = [
   ["Framework", "Next.js 16.4 (App Router, React 19.3, TypeScript 6.0 strict)"],
   ["UI", "Tailwind CSS 4.3, shadcn/ui (Radix), Lucide icons, Motion, Geist fonts"],
   ["Charts", "Recharts 3.10 (one library, fixed model colours and dash patterns)"],
-  ["LLM", "Vercel AI SDK 7 + @ai-sdk/anthropic 4, Claude Sonnet 5.5, tool calling, streaming"],
+  ["LLM", "Vercel AI SDK 7 + @ai-sdk/google 4, Google Gemini 3.6 Flash, tool calling, streaming"],
   ["Data", "Zod-validated JSON exported from the executed notebook; Papa Parse for uploads"],
   ["Forecasting engine", "TypeScript: Naïve, Seasonal Naïve, moving average, Holt-Winters, ridge, seasonal-index transfer"],
   ["Testing", "Vitest (unit + notebook parity), Playwright + axe-core (e2e, accessibility)"],

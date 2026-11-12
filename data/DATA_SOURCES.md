@@ -69,4 +69,4 @@ Cities: New York, Los Angeles, Chicago, Houston and Atlanta (same as the noteboo
 
 ## 6. User uploads
 
-CSV files uploaded on the Data Workspace page are parsed **in the browser** only. They are never sent to or stored on the server, and never committed. Only aggregated monthly values (at most 240 points) are sent to the Copilot, and only when the user asks it a question.
+CSV files uploaded on the Data Workspace page are parsed **in the browser** only. They are never sent to or stored on the server, and never committed. Only aggregated monthly values (at most 240 points) are sent to the Copilot, and only when the user asks it a question. The Copilot runs on Google's Gemini API; on Google's free tier, Google may use submitted content to improve its products, so users are asked not to enter personal data.

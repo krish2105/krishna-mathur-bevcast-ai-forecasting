@@ -21,7 +21,7 @@ export default async function CopilotPage({ searchParams }: PageProps<"/copilot"
       <PageHeader
         eyebrow="Part 2 · LLM interpretation on real-time data (notebook §2.13)"
         title="BevCast AI Copilot"
-        description="Claude, through the Vercel AI SDK with tool calling. Each answer shows which tools (data) it used, where the numbers came from and when the data were retrieved."
+        description="Google Gemini, through the Vercel AI SDK with tool calling. Each answer shows which tools (data) it used, where the numbers came from and when the data were retrieved."
         badges={
           <>
             {cfg.configured ? <ProvenanceBadge kind="ai">Live LLM</ProvenanceBadge> : <ProvenanceBadge kind="fallback" />}

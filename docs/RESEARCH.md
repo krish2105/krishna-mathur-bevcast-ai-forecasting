@@ -23,7 +23,7 @@ Research for BEVCAST AI, done on 12 Nov 2026 before any UI code was written. Pac
 | shadcn (CLI) | 4.23.0 | `init -b radix`: version 4 defaults to Base UI, so Radix is chosen explicitly. Components are copied into `components/ui`. |
 | recharts | 3.10.1 | shadcn's `chart` component targets Recharts v3. One chart library is used everywhere. |
 | ai | 7.0.170 | Vercel AI SDK 7: `streamText` with `instructions`, `tool({ inputSchema })`, `isStepCount`, async `convertToModelMessages`, `createUIMessageStreamResponse` + `toUIMessageStream`. ESM only, Node 22 or later. |
-| @ai-sdk/anthropic | 4.0.102 | Provider options `effort`, `thinking`, `fallbacks` (adds the `server-side-fallback-2026-07-01` beta header itself). Refusal maps to `finishReason: "content-filter"`. |
+| @ai-sdk/anthropic | 4.0.102 (replaced, see §6) | Provider options `effort`, `thinking`, `fallbacks` (adds the `server-side-fallback-2026-07-01` beta header itself). Refusal maps to `finishReason: "content-filter"`. |
 | @ai-sdk/react | 4.0.174 | `useChat` with `DefaultChatTransport({ api, body })`, `status`, `stop`, `regenerate`, tool parts `tool-<name>`. |
 | zod | 4.6.7 | Tool input schemas and API validation. |
 | motion | 14.12.0 | Motion (formerly Framer Motion); `useReducedMotion` respected. |
@@ -107,3 +107,14 @@ Skipped on purpose (out of scope per the brief): reorder points, safety-stock op
 ## 5. Day 10 of RDMU
 
 **Not found.** I searched `~/Desktop` to depth 6 for names containing "RDMU", "Day 10", "Day10" and "Day_10", and ran a Spotlight search for "RDMU". The only RDMU file on the Mac is an RDMU *individual assignment* deck in iCloud Downloads, not Day 10 course material. Nothing from Day 10 is quoted or assumed. The notebook follows the professor's reference Colab, which uses `google.colab.ai`. The web app uses the Anthropic API through the Vercel AI SDK.
+
+## 6. Change of LLM provider: Anthropic to Google Gemini (12 Nov 2026)
+
+At the student's request the Copilot and the AI summary now run on the **Google Gemini API**, with the student's own free-tier key, through `@ai-sdk/google` 4.0.118. Everything else is unchanged: the tools, the system prompt, the rule-based fallback, the rate limit and the validation.
+
+- **Model:** `gemini-3.6-flash`, overridable with `GEMINI_MODEL`. Google AI Studio's models page labels it **Stable**, and its pricing page lists a **free tier**. `gemini-2.5-flash` is deprecated and re-routed on 1 Dec 2026, so it is not used. (Sources: aistudio.google.com/docs/models and /docs/pricing, read 12 Nov 2026.)
+- **Thinking:** `thinkingConfig.thinkingLevel = "low"`, with `includeThoughts: false`.
+- **History handling:** earlier turns are sent as plain text only, without tool calls or provider metadata. The model calls the tools again when it needs numbers, so no stale thought signatures are replayed.
+- **Tool schemas:** these were kept to Gemini's function-calling subset. For example, `part` is an integer from 1 to 2, not a union of literals.
+- **Privacy:** on the free tier, Google may use prompts to improve its products. The Copilot page says so and asks users not to enter personal data.
+- **Key handling:** the key lives in the gitignored `.env.local` and on Vercel (Production). `scripts/push-gemini-key.sh` copies it without printing it.

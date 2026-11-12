@@ -30,6 +30,6 @@ Base URL https://bevcast-ai.vercel.app · run at 2026-11-12T11:22:40.585Z
   - reference notebook run 2026-11-12;
   - FRED and Open-Meteo retrieval times for the live answers.
 
-## Run 2: live LLM (Claude, `claude-sonnet-5-5`)
+## Run 2: live LLM (Google Gemini, `gemini-3.6-flash`)
 
-Pending: run once `ANTHROPIC_API_KEY` is added to the Vercel production environment.
+Pending: run once `GOOGLE_GENERATIVE_AI_API_KEY` is set on Vercel.

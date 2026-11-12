@@ -1,4 +1,3 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -9,7 +8,7 @@ import {
   type UIMessage,
 } from "ai";
 import { fallbackAnswer } from "@/lib/ai/fallback";
-import { MAX_OUTPUT_TOKENS, llmConfig } from "@/lib/ai/config";
+import { MAX_OUTPUT_TOKENS, PROVIDER_OPTIONS, geminiModel, llmConfig, llmErrorMessage } from "@/lib/ai/config";
 import { clientIp, rateLimit } from "@/lib/ai/rate-limit";
 import { ChatRequest, MAX_HISTORY, MAX_USER_CHARS, type ChatMetadata } from "@/lib/ai/schemas";
 import { SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
@@ -51,12 +50,12 @@ export async function POST(req: Request) {
   if (last.role !== "user" || question.trim().length === 0) return jsonError(400, "The last message must be a non-empty user question.");
   if (question.length > MAX_USER_CHARS) return jsonError(413, `Questions are limited to ${MAX_USER_CHARS} characters.`);
 
-  // Keep the most recent turns; drop earlier reasoning (removing all prior thinking blocks keeps the
-  // conversation valid) and anything that is not a user or assistant message.
-  const messages = rawMessages.slice(-MAX_HISTORY).map((m) => ({
-    ...m,
-    parts: m.parts.filter((p) => p.type !== "reasoning" && p.type !== "step-start"),
-  })) as unknown as ChatUIMessage[];
+  // Earlier turns are replayed as plain text only: tool calls, tool results and reasoning from previous answers
+  // are dropped (the model re-calls tools when it needs numbers), so no stale provider metadata is sent back.
+  const messages = rawMessages
+    .slice(-MAX_HISTORY)
+    .map((m) => ({ ...m, parts: m.parts.filter((p) => p.type === "text") }))
+    .filter((m) => m.parts.length > 0) as unknown as ChatUIMessage[];
 
   const cfg = llmConfig();
   const createdAt = new Date().toISOString();
@@ -81,23 +80,16 @@ export async function POST(req: Request) {
 
   const trace = newTrace();
   const tools = buildTools(uploaded, trace);
-  const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   const result = streamText({
-    model: anthropic(cfg.model),
+    model: geminiModel(cfg.model),
     instructions: SYSTEM_PROMPT,
     messages: await convertToModelMessages(messages, { tools }),
     tools,
     stopWhen: isStepCount(6),
     maxOutputTokens: MAX_OUTPUT_TOKENS,
     abortSignal: req.signal,
-    providerOptions: {
-      anthropic: {
-        effort: "low",
-        // Server-side fallback for classifier refusals (the provider adds the beta header itself).
-        fallbacks: "default",
-      },
-    },
+    providerOptions: PROVIDER_OPTIONS,
     onError: ({ error }) => {
       console.error("[chat] stream error:", error instanceof Error ? error.message : error);
     },
@@ -109,10 +101,7 @@ export async function POST(req: Request) {
       tools,
       originalMessages: messages,
       sendReasoning: false,
-      onError: (e) =>
-        e instanceof Error && /401|authentication|api key/i.test(e.message)
-          ? "The LLM key was rejected. Ask the site owner to check ANTHROPIC_API_KEY."
-          : "The language model could not answer right now. Please retry.",
+      onError: llmErrorMessage,
       messageMetadata: ({ part }) => {
         if (part.type === "start") return { mode: "ai", model: cfg.model, createdAt } satisfies ChatMetadata;
         if (part.type === "finish") {

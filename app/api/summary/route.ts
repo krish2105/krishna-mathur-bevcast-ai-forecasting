@@ -1,6 +1,5 @@
-import { createAnthropic } from "@ai-sdk/anthropic";
 import { generateText, isStepCount } from "ai";
-import { MAX_OUTPUT_TOKENS, llmConfig } from "@/lib/ai/config";
+import { MAX_OUTPUT_TOKENS, PROVIDER_OPTIONS, geminiModel, llmConfig, llmErrorMessage } from "@/lib/ai/config";
 import { fallbackSummary } from "@/lib/ai/fallback";
 import { clientIp, rateLimit } from "@/lib/ai/rate-limit";
 import { SummaryRequest } from "@/lib/ai/schemas";
@@ -54,16 +53,15 @@ export async function POST(req: Request) {
   const trace = newTrace();
   const tools = buildTools(null, trace);
   try {
-    const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const res = await generateText({
-      model: anthropic(cfg.model),
+      model: geminiModel(cfg.model),
       instructions: SYSTEM_PROMPT,
       prompt: SUMMARY_PROMPT,
       tools,
       stopWhen: isStepCount(6),
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       abortSignal: AbortSignal.timeout(55_000),
-      providerOptions: { anthropic: { effort: "low", fallbacks: "default" } },
+      providerOptions: PROVIDER_OPTIONS,
     });
     if (!res.text.trim()) throw new Error(`Empty answer (finish reason ${res.finishReason})`);
     const payload: SummaryPayload = {
@@ -85,7 +83,7 @@ export async function POST(req: Request) {
       generatedAt: new Date().toISOString(),
       dataAsOf: fb.asOf,
       tools: fb.tools,
-      notice: "The LLM call failed, so the rule-based summary is shown instead.",
+      notice: `${llmErrorMessage(e)} The rule-based summary is shown instead.`,
     } satisfies SummaryPayload);
   }
 }

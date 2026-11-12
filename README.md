@@ -21,7 +21,7 @@ BEVCAST AI is the web dashboard that accompanies the executed Jupyter notebook f
   - lag and seasonal features, and six models;
   - a chronological split and a rolling-origin backtest;
   - a 3-month forecast, MAPE and WAPE, plots and interpretation.
-- **Copilot:** a tool-calling Claude model interprets the results using **real-time data**: the live FRED release, the live Open-Meteo outlook and the user's uploaded data.
+- **Copilot:** a tool-calling Google Gemini model interprets the results using **real-time data**: the live FRED release, the live Open-Meteo outlook and the user's uploaded data.
 
 The executed notebook is the **single source of truth**. `scripts/export_results.py` re-runs its code offline and asserts that every number matches the saved outputs (368 checks) before the app uses them.
 
@@ -118,10 +118,10 @@ WAPE is **not** the average of the monthly percentage errors: it weights each mo
 
 ## 8. LLM architecture and the meaning of "real-time"
 
-- **Stack:** Vercel AI SDK 7 with `@ai-sdk/anthropic`.
-  - Model `claude-sonnet-5-5`, overridable with `ANTHROPIC_MODEL`.
-  - Streaming, tool calling and adaptive thinking at `effort: "low"`.
-  - A server-side `fallbacks: "default"` handles classifier refusals.
+- **Stack:** Vercel AI SDK 7 with `@ai-sdk/google` (Google Gemini API).
+  - Model `gemini-3.6-flash` (labelled Stable, free tier available), overridable with `GEMINI_MODEL`.
+  - Streaming, tool calling and `thinkingLevel: "low"` to keep latency and free-tier usage down.
+  - Earlier turns are replayed as plain text only, so the model re-calls tools for any number it needs.
 - **Tools.** Each one returns real values from the app, never generated text. Tool chips under each answer show which data it used.
   - `getAssignmentBrief`, `getDatasetSummary`, `getSalesHistory`
   - `getSeasonality`, `getModelLeaderboard`, `getForecast`, `getMetrics`
@@ -139,6 +139,7 @@ WAPE is **not** the average of the monthly percentage errors: it weights each mo
   - **(b)** the dataset the user uploaded in this browser session. It is sent as at most 240 aggregated monthly values and evaluated server-side by the same TypeScript engine.
 
   Every answer shows a "Data as of …" line.
+- **Privacy:** questions and any uploaded monthly values are sent to Google's Gemini API. On the free tier Google may use this content to improve its products, so the Copilot asks users not to type personal data.
 - **No key?** The Copilot and the AI executive summary switch to a deterministic **"Rule-based fallback (not AI)"**, built from the same tool functions and labelled as such. Everything else works.
 - **Guards:**
   - Zod-validated requests.
@@ -164,7 +165,7 @@ flowchart LR
   TOOLS --> JSON
   TOOLS --> LIVE
   TOOLS --> ENG
-  CHAT <-->|Messages API| CLAUDE["Claude Sonnet 5.5"]
+  CHAT <-->|Gemini API| GEMINI["Google Gemini 3.6 Flash"]
 ```
 
 ## 10. Local setup
@@ -183,12 +184,12 @@ python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt
 
 ## 11. Environment variables
 
-See [`.env.example`](.env.example). All of them are optional:
+See [`.env.example`](.env.example). All of them are optional. To put a local key on Vercel without printing it, run `bash scripts/push-gemini-key.sh`.
 
 | Variable | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Enables the live Copilot and the AI summary. Server-only; never sent to the browser. |
-| `ANTHROPIC_MODEL` | Claude model ID (default `claude-sonnet-5-5`) |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google Gemini API key (Google AI Studio). Enables the live Copilot and the AI summary. Server-only; never sent to the browser. `GEMINI_API_KEY` is accepted too. |
+| `GEMINI_MODEL` | Gemini model ID (default `gemini-3.6-flash`) |
 | `NEXT_PUBLIC_APP_URL` | Public base URL for metadata |
 
 ## 12. Testing

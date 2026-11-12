@@ -12,4 +12,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - The executed notebook in `notebook/` is the single source of truth. Never hand-edit `data/*.json`; re-run `scripts/export_results.py`.
 - Every displayed number is labelled: reference (notebook), in-app engine, live, uploaded, simulated or proxy. Never mix reference and engine numbers.
-- Secrets (ANTHROPIC_API_KEY) are server-only and never committed.
+- Secrets (GOOGLE_GENERATIVE_AI_API_KEY) are server-only and never committed.

@@ -68,12 +68,12 @@ export function buildTools(uploaded: UploadedPayload | null, trace: ToolTrace) {
       description:
         "Model scores. Part 2: 'holdout' (12-month test Oct 2025–Sep 2026) or 'backtest' (18-origin 3-month rolling). Part 1: 'walk_forward' (Jul–Dec, honest) or 'in_sample' (misleading fit score).",
       inputSchema: z.object({
-        part: z.union([z.literal(1), z.literal(2)]),
+        part: z.number().int().min(1).max(2).describe("1 = air coolers, 2 = flavored water"),
         evaluation: z.enum(["holdout", "backtest", "walk_forward", "in_sample"]),
       }),
       execute: async ({ part, evaluation }) => {
         ref("getModelLeaderboard");
-        return D.getModelLeaderboard(part, evaluation);
+        return D.getModelLeaderboard(part === 1 ? 1 : 2, evaluation);
       },
     }),
     getForecast: tool({
