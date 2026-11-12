@@ -115,3 +115,25 @@ The in-app engine models reuse the nearest family colour: Holt-Winters (both var
 ## Voice
 
 Labels are plain ("Units mis-planned", not "Inefficiency score"). The app never overstates: "recommendation", not "order placed"; "category proxy", not "sales". The AI copilot says where each number came from.
+
+## Palette validation and secondary encoding
+
+The model colours are fixed by the brief, so they match the notebook. I ran the dataviz palette validator (`validate_palette.js --pairs all`) on them against white (light) and #111A2B (dark).
+- **Passes:** contrast against the surface, at 3:1 or more for all 7 colours in both themes.
+- **Fails (colour-blind separation):** XGBoost #7B61B0 against Holt-Winters #2E86C1, at ΔE 4.1 for deuteranopia and 3.7 for tritanopia.
+- **Fails (normal-vision floor):** Seasonal Naïve #B08D57 against Naïve #E07A1F, at ΔE 8.8.
+- **Fails by design:** "Actual" sits outside the lightness and chroma band because it is the neutral reference series, not a category.
+
+Because the colours cannot change, identity never depends on colour alone:
+
+| Series | Line style |
+|---|---|
+| Actual | solid 2.5 px with dots |
+| XGBoost | solid 2 px |
+| Holt-Winters | long dash `10 4` |
+| SARIMA | dash `6 3` |
+| Random Forest | short dash `3 3` |
+| Naïve | dotted `1 4`, round caps |
+| Seasonal Naïve | dash-dot `8 3 2 3` |
+
+Legends are always shown for two or more series. Default views show at most four series, and the rest are behind model toggles. Every chart has a "View data" table.
